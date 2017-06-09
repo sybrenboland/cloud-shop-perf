@@ -1,37 +1,35 @@
-services:
-  discovery-service:
-    image: shboland/discovery-service
-    ports:
-     - 8761:8761
+discovery-service:
+  image: shboland/discovery-service
+  ports:
+   - 8761:8761
 
-  inventory-service:
-    image: shboland/inventory-service
-    environment:
-     - SPRING_PROFILES_ACTIVE=production
-    links:
-      - discovery-service
+inventory-service:
+  image: shboland/inventory-service
+  environment:
+   - SPRING_PROFILES_ACTIVE=production
+  links:
+    - discovery-service
 
-  basket-service:
-    image: shboland/basket-service
-    environment:
-     - SPRING_PROFILES_ACTIVE=production
-    links:
-      - discovery-service
+basket-service:
+  image: shboland/basket-service
+  environment:
+   - SPRING_PROFILES_ACTIVE=production
+  links:
+    - discovery-service
 
-  edge-service:
-    image: shboland/edge-service
-    ports:
-      - 9000:9000
-    links:
-      - discovery-service
+edge-service:
+  image: shboland/edge-service
+  ports:
+    - 9000:9000
+  links:
+    - discovery-service
 
-
-  gatling-runner:
-    image: denvazh/gatling:2.2.3
-    command: [-s, sample.SampleService]
-    volumes:
-      - ./gatling/conf:/opt/gatling/conf
-      - ./gatling/simulations:/opt/gatling/user-files/simulations
-      - ./gatling/results:/opt/gatling/results
-    links:
-      - edge-service
+gatling-runner:
+  image: denvazh/gatling:2.2.3
+  command: [-s, sample.SampleService]
+  volumes:
+    - ./gatling/conf:/opt/gatling/conf
+    - ./gatling/simulations:/opt/gatling/user-files/simulations
+    - ./gatling/results:/opt/gatling/results
+  links:
+    - edge-service
